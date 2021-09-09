@@ -22,9 +22,9 @@
     chdir: /usr/local/bin
     cmd: "mv {{ exporter_dir }}/node_exporter ./ && rm -rf {{ exporter_dir }}"
 
-- name: copy service file
+- name: put service file
   copy:
-    src: roles/rasp_exporter/node_exporter.service
+    src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
     owner: root
     group: root
@@ -39,3 +39,16 @@
     name: node_exporter
     state: started
     enabled: yes
+
+- block:
+  - name: check firewall
+    shell: "firewall-cmd --zone=public --list-ports | grep 9100"
+    #ignore_errors: yes
+    register: firewall_check
+    changed_when: no
+    failed_when: firewall_check.rc > 1
+  - name: update firewall
+    shell: "firewall-cmd --permanent --zone=public --add-port=9100/tcp && firewall-cmd --reload"
+    when: firewall_check.rc != 0
+  when: ansible_os_family == 'RedHat'
+

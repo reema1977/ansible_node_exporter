@@ -1,2 +1,4 @@
 ---
-# defaults file for rasp3_exporter
+# defaults file for node_exporter (for example : Amazon Linux on arm arch)
+exporter_dir: "node_exporter-1.2.2.linux-arm64"
+exporter_url: "https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-arm64.tar.gz"
